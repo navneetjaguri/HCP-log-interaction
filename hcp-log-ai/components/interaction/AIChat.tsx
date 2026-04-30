@@ -14,6 +14,7 @@ import {
   BrainCircuit,
   RefreshCw
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AIChat() {
   const [input, setInput] = useState('');
@@ -58,6 +59,7 @@ export default function AIChat() {
       setMessages(prev => [...prev, { role: 'ai', content: response }]);
       if (updated_form_data && Object.keys(updated_form_data).length > 0) {
         dispatch(updateForm(updated_form_data));
+        toast.success('Form automatically synced by Aura');
       }
     } catch (error) {
       setMessages(prev => [...prev, { role: 'ai', content: 'I apologize, but I encountered a connection issue. Please ensure the backend is running.' }]);

@@ -15,8 +15,10 @@ import {
   Smile, 
   Target, 
   ClipboardCheck,
-  Zap
+  Zap,
+  Save
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function InteractionForm() {
   const form = useSelector((state: RootState) => state.interaction);
@@ -240,6 +242,24 @@ export default function InteractionForm() {
             </div>
           </div>
         </section>
+        
+        {/* Save Actions */}
+        <div className="flex justify-end pt-4 border-t border-gray-100">
+          <button
+            onClick={() => {
+              if (!form.hcp_name || !form.date) {
+                toast.error('HCP Name and Date are required');
+                return;
+              }
+              // Here we'd typically make a POST request to save the interaction
+              toast.success(`Interaction with ${form.hcp_name} saved successfully!`);
+              // Optional: reset form
+            }}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-95"
+          >
+            <Save size={18} /> Save Interaction
+          </button>
+        </div>
       </div>
     </div>
   );
