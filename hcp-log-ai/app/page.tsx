@@ -14,16 +14,19 @@ import {
   Search,
   ChevronRight
 } from 'lucide-react';
+import Link from 'next/link';
 
-function SidebarItem({ icon: Icon, label, active = false }: { icon: any, label: string, active?: boolean }) {
+function SidebarItem({ icon: Icon, label, active = false, href = "#" }: { icon: any, label: string, active?: boolean, href?: string }) {
   return (
-    <div className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all ${
-      active ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:bg-gray-100'
-    }`}>
-      <Icon size={20} />
-      <span className="font-semibold text-sm">{label}</span>
-      {active && <ChevronRight size={14} className="ml-auto" />}
-    </div>
+    <Link href={href}>
+      <div className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all ${
+        active ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:bg-gray-100'
+      }`}>
+        <Icon size={20} />
+        <span className="font-semibold text-sm">{label}</span>
+        {active && <ChevronRight size={14} className="ml-auto" />}
+      </div>
+    </Link>
   );
 }
 
@@ -40,9 +43,9 @@ function LogInteractionPage() {
         </div>
 
         <nav className="space-y-2 flex-1">
-          <SidebarItem icon={LayoutDashboard} label="Dashboard" />
-          <SidebarItem icon={Users} label="HCP Database" />
-          <SidebarItem icon={LayoutDashboard} label="Interactions" active />
+          <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" />
+          <SidebarItem icon={Users} label="HCP Database" href="/hcp-database" />
+          <SidebarItem icon={LayoutDashboard} label="Interactions" href="/" active />
           <SidebarItem icon={Settings} label="Preferences" />
         </nav>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from 'sonner';
 import "./globals.css";
 
 const inter = Inter({
@@ -10,6 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "HCP Interaction Log AI",
   description: "Log HCP interactions using AI",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -23,7 +25,10 @@ export default function RootLayout({
       className={`${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {children}
+        <Toaster position="top-right" richColors />
+      </body>
     </html>
   );
 }
