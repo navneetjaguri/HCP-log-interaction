@@ -65,24 +65,26 @@ async def chat(request: ChatRequest):
     updated_form_data = final_state.get("form_data", {})
 
     # FALLBACK: Detect if LLM typed out tags instead of using tool API
-    # SUPER-RESILIENT FALLBACK: Catch even slightly broken tags like <function(name){...}</function>
-    function_tag_pattern = r'<function.*?(\w+).*?({.*})[\s\S]*?</function>'
-    tags = re.findall(function_tag_pattern, ai_response, re.DOTALL)
+    # Matches <function(name)>{json_args}</function>
+    function_tag_pattern = r'<function\((?P<name>\w+)\)>(?P<args>\{.*?\})</function>'
+    matches = re.finditer(function_tag_pattern, ai_response, re.DOTALL)
     
-    if tags:
-        for tool_name, args_str in tags:
-            try:
-                # Strip and clean the JSON string
-                clean_json = args_str.strip()
-                args = json.loads(clean_json)
-                if tool_name == "update_form_state":
-                    updated_form_data.update(args)
-                elif tool_name == "log_interaction":
-                    pass
-            except Exception as e:
-                print(f"DEBUG: Error parsing fallback JSON for {tool_name}: {e}")
-                print(f"DEBUG: Raw string was: '{args_str}'")
-        
+    found_any = False
+    for match in matches:
+        found_any = True
+        tool_name = match.group('name')
+        args_str = match.group('args')
+        try:
+            args = json.loads(args_str)
+            if tool_name == "update_form_state":
+                updated_form_data.update(args)
+            elif tool_name == "log_interaction":
+                # Handle other tools if necessary
+                pass
+        except Exception as e:
+            print(f"DEBUG: Error parsing fallback JSON for {tool_name}: {e}")
+    
+    if found_any:
         # Clean up the response from tags
         ai_response = re.sub(function_tag_pattern, "", ai_response, flags=re.DOTALL).strip()
 
